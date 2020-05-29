@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "StringManipulator.h"
+
 class Comment {
 
 public:
@@ -66,11 +68,12 @@ private:
 	};
 
 	std::vector<std::string> content;
+	StringManipulator stringManipulator;
 
 	bool newLineAtPosition(std::string&, int);
-
+	bool isIgnoredSymbolAtPosition(std::string&, int);
+	bool isSingleDashAtPosition(std::string&, int);
+	size_t ignoreInvalidSymbolsAndWhitespaceFromPosition(std::string&, int);
 };
-
-
 
 #endif
