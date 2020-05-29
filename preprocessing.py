@@ -57,7 +57,7 @@ def read_data(file_name, to_lower_case=False, remove_stop_words=False, stem=Fals
     return df
 
 
-def get_vectors(df, max_features=1000, ngram_range=(1, 1), tf=False, idf=False, tfidf=False):
+def vectorize(df, max_features=1000, ngram_range=(1, 1), tf=False, idf=False, tfidf=False):
     pipe = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
                      ('tfidf', TfidfTransformer(use_idf=not tf))]).fit(df[COMMENT])
 
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     df = read_data("input.txt", to_lower_case=True, remove_stop_words=False,
                    stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=1)
 
-    counts, names = get_vectors(df)
-    tfidfs, names = get_vectors(df, max_features=500, tfidf=True)
-    tfs, names = get_vectors(df, max_features=300, tf=True)
-    idfs, names = get_vectors(df, idf=True)
+    counts, names = vectorize(df)
+    tfidfs, names = vectorize(df, max_features=500, tfidf=True)
+    tfs, names = vectorize(df, max_features=300, tf=True)
+    idfs, names = vectorize(df, idf=True)
