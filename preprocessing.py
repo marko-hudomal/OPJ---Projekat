@@ -69,7 +69,7 @@ def vectorize(df, max_features=1000, ngram_range=(1, 1), tf=False, idf=False, tf
     if tfidf:
         return pipe.transform(df[COMMENT]).toarray(), feature_names
 
-    return pipe['count'].transform(df[COMMENT]), feature_names
+    return pipe['count'].transform(df[COMMENT]).toarray(), feature_names
 
 
 if __name__ == "__main__":
