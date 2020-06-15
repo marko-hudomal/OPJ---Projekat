@@ -13,8 +13,10 @@ nltk.download('stopwords')
 
 COMMENT = "Comment"
 
+
 def read_file(file_name):
     return pd.read_csv(file_name, encoding='ISO-8859-1', delimiter="\t")
+
 
 def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=None):
     df = file_df.copy(deep=True)
@@ -55,7 +57,7 @@ def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=Fal
         if comment_index_to_analize == index:
             print("RESULT\n", " ".join(words), "\n")
 
-        df.loc[index,COMMENT] = " ".join(words)
+        df.loc[index, COMMENT] = " ".join(words)
     return df
 
 
@@ -76,7 +78,7 @@ if __name__ == "__main__":
 
     file_df = read_file("input.txt")
     df = process_data(file_df, to_lower_case=True, remove_stop_words=False,
-                   stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=1)
+                      stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=1)
 
     counts, names = vectorize(df)
     tfidfs, names = vectorize(df, max_features=500, tfidf=True)
