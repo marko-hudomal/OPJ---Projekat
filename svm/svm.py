@@ -26,11 +26,8 @@ class Parameters :
 
 def getInfoFromParameters(input_file, parameters):
 
-    Corpus = preprocessing.read_data(input_file, to_lower_case=parameters.lowerCaseFlag, remove_stop_words=parameters.removeStopWordsFlag, stem=parameters.stemFlag)
-    matrix, names = preprocessing.vectorize(Corpus, max_features=parameters.maxFeatures, ngram_range=parameters.ngramRange, tf=parameters.tfidfFlags[0], idf=parameters.tfidfFlags[1], tfidf=parameters.tfidfFlags[2])
-
-    #TrainX, TestX, TrainY, TestY = model_selection.train_test_split(matrix, Corpus['Class'],test_size=parameters.testSize)
-
+    Corpus = preprocessing.process_data(input_file, to_lower_case=parameters.lowerCaseFlag, remove_stop_words=parameters.removeStopWordsFlag, stem=parameters.stemFlag)
+    matrix, names = preprocessing.vectorize(Corpus, max_features=parameters.maxFeatures, ngram_range=parameters.ngramRange, tf=parameters.tfidfFlags[0], tfidf=parameters.tfidfFlags[1])
     return Corpus, matrix, names
 
 def getHeaderAll():
@@ -46,8 +43,9 @@ def getHeaderFunctionalOnly():
     
     return result
 
-classificationReportList = []
 
+
+classificationReportList = []
 def scoringFunction(estimator, x, y):
 
     global classificationReportList
@@ -61,8 +59,6 @@ def scoringFunction(estimator, x, y):
 def printAverageValuesOfClassificationReportList(outputFile, parameters):
 
     global classificationReportList
-
-    print("Length = ", len(classificationReportList))
     resultDictionary = {}
 
     commentClassArray = []
@@ -94,7 +90,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters):
     accuracy = accuracy / len(classificationReportList)
 
     if (outputFile == 'output.csv'):
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.tfidfFlags[2], accuracy, 
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], accuracy, 
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
         resultDictionary['Functional-Inline']['precision'], resultDictionary['Functional-Inline']['recall'], resultDictionary['Functional-Inline']['f1-score'], resultDictionary['Functional-Inline']['support'],
@@ -104,7 +100,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters):
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
         resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], sep=',')
     else:
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.tfidfFlags[2], accuracy, 
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], accuracy, 
         resultDictionary['Functional']['precision'], resultDictionary['Functional']['recall'], resultDictionary['Functional']['f1-score'], resultDictionary['Functional']['support'],
         resultDictionary['Code']['precision'], resultDictionary['Code']['recall'], resultDictionary['Code']['f1-score'], resultDictionary['Code']['support'],
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
@@ -124,7 +120,7 @@ if __name__ == "__main__":
             for stemFlag in [False, True]:
                     for maxFeatures in [1000, 5000]:
                         for ngramRange in [(1, 1), (1, 2), (1, 3)]:
-                            for tfidfFlags in [(False, False, False), (True, False, False), (False, False, True)]:
+                            for tfidfFlags in [(False, False), (True, False), (False, True)]:
                                 parametersList.append(Parameters(
                                     lowerCaseFlag, 
                                     removeStopWordsFlag, 
@@ -134,24 +130,26 @@ if __name__ == "__main__":
                                     tfidfFlags)
                                 )
 
-    original_stdout = sys.stdout # Save a reference to the original standard output
-
+    # Save a reference to the original standard output
+    original_stdout = sys.stdout
+    
     # Go through all of the input files and configurations and export the results to a .csv file.
-    # ("input-functional.txt", "output-functional.csv")
-    for input_file, output_file in [("input.txt", "output.csv")]:
+    for input_file, output_file in [("input.txt", "output.csv"), ("input-functional.txt", "output-functional.csv")]:
          with open(output_file, 'w') as output:
             sys.stdout = output
             
-            header = "Lower Case,Remove Stop Words,Stem,Test Size,Max Features,N-gram Range,TF,IDF,TFIDF,Accuracy"
+            header = "Lower Case,Remove Stop Words,Stem,Test Size,Max Features,N-gram Range,TF,TFIDF,Accuracy"
             if (input_file == "input.txt"):
                 header += getHeaderAll()
             else:
                 header += getHeaderFunctionalOnly()
             print(header)
 
+            fileData = preprocessing.read_file(input_file)
+
             for parameters in parametersList:
                 # Find optimal hyperparameter C and gamma.
-                Corpus, matrix, names = getInfoFromParameters("input-functional.txt", parameters)
+                Corpus, matrix, names = getInfoFromParameters(fileData, parameters)
 
                 # [0.1, 1, 10, 100]
                 param_grid = {'C': [0.1, 1, 10],
@@ -166,6 +164,6 @@ if __name__ == "__main__":
                 # Outer CV. SVM.fit() gets called in cross_validate.
                 cross_validate(SVM, X=matrix, y=Corpus['Class'], scoring = scoringFunction, cv = outer_cv, return_train_score = True)
 
-                printAverageValuesOfClassificationReportList("output-functional.csv", parameters)
+                printAverageValuesOfClassificationReportList(output_file, parameters)
 
             sys.stdout = original_stdout
