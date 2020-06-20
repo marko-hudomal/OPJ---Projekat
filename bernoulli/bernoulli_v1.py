@@ -32,16 +32,13 @@ def getInfoFromParameters(input_file, parameters):
 
     return Corpus, counts_by_comment, names
 
-def getHeaderAll():
-    result = ",Functional-Method Precision,Functional-Method Recall,Functional-Method F1-Score,Functional-Method Support,Functional-Module Precision,Functional-Module Recall,Functional-Module F1-Score,Functional-Module Support," + "Functional-Inline Precision,Functional-Inline Recall,Functional-Inline F1-Score,Functional-Inline Support,Code Precision,Code Recall,Code F1-Score,Code Support,IDE Precision,IDE Recall,IDE F1-Score,IDE Support,"
-    result += "General Precision,General Recall,General F1-Score,General Support,Notice Precision,Notice Recall,Notice F1-Score,Notice Support"
+def getHeader(is_functional):
+    if (is_functional):
+        result = ",Functional Precision,Functional Recall,Functional F1-Score,Functional Support"
+    else:
+        result = ",Functional-Method Precision,Functional-Method Recall,Functional-Method F1-Score,Functional-Method Support" + ",Functional-Module Precision,Functional-Module Recall,Functional-Module F1-Score,Functional-Module Support" + ",Functional-Inline Precision,Functional-Inline Recall,Functional-Inline F1-Score,Functional-Inline Support"
 
-    return result
-
-def getHeaderFunctionalOnly():
-    result = ",Functional Precision,Functional Recall,Functional F1-Score,Functional Support,Code Precision,Code Recall,Code F1-Score,Code Support,IDE Precision,IDE Recall,IDE F1-Score,IDE Support,"
-    result += "General Precision,General Recall,General F1-Score,General Support,Notice Precision,Notice Recall,Notice F1-Score,Notice Support"
-
+    result += ",Code Precision,Code Recall,Code F1-Score,Code Support" + ",IDE Precision,IDE Recall,IDE F1-Score,IDE Support" + ",General Precision,General Recall,General F1-Score,General Support" + ",Notice Precision,Notice Recall,Notice F1-Score,Notice Support"
     return result
 
 if __name__ == "__main__":
@@ -78,20 +75,17 @@ if __name__ == "__main__":
 
             # Print header in output file.
             header = "Lower Case,Remove Stop Words,Stem,Test Size,Max Features,N-gram Range,TF,TFIDF,Accuracy"
-            if (is_functional):
-                header += getHeaderFunctionalOnly()
-            else:
-                header += getHeaderAll()
+            header += getHeader(is_functional)
 
             sys.stdout = output_file_print_target   # Change the standard output to the file we created.
             print(header)
             sys.stdout = original_stdout            # Reset the standard output to its original value
 
             for parameters in parametersList:
-                # # For test, leave this comment for fast testing
-                # if parameters != parametersList[0]:
-                #     #print("Skip param...")
-                #     continue
+                # For test, leave this comment for fast testing
+                if parameters != parametersList[0]:
+                    #print("Skip param...")
+                    continue
 
                 print("Selected file processing param:")
                 print("", "LowerCase", "RemoveStopWords", "Stem", "TestSize", "MaxFeatures", "N-gramRange", "TFIDF[0]", "TFIDF[1]", "TFIDF[2]", sep='\t\t\t')
@@ -106,25 +100,25 @@ if __name__ == "__main__":
                 bernoulli.fit(TrainX,TrainY)
 
                 print("Search for best estimator params...")
-                # [1]Slow - Find optimal params
-                param_grid = {'alpha': [0.0001,0.001, 0.01, 0.1, 0.2, 0.5, 1.0],
-                            'binarize': [0.0,0.05, 0.1, 0.3, 0.6, 1.0],
-                            'fit_prior': [True,False],
-                            'class_prior': [None]}
+                # # [1]Slow - Find optimal params
+                # param_grid = {'alpha': [0.0001,0.001, 0.01, 0.1, 0.2, 0.5, 1.0],
+                #             'binarize': [0.0,0.05, 0.1, 0.3, 0.6, 1.0],
+                #             'fit_prior': [True,False],
+                #             'class_prior': [None]}
+                #
+                # CV = GridSearchCV(bernoulli, param_grid, refit = True, verbose = 3, n_jobs=-1)
+                # CV.fit(TrainX, TrainY)
+                #
+                # optimalAlpha = CV.best_estimator_.alpha
+                # optimalBinarize = CV.best_estimator_.binarize
+                # optimalFitPrior = CV.best_estimator_.fit_prior
+                # print("Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior,", Best score: ",CV.best_score_)
 
-                CV = GridSearchCV(bernoulli, param_grid, refit = True, verbose = 3, n_jobs=-1)
-                CV.fit(TrainX, TrainY)
-
-                optimalAlpha = CV.best_estimator_.alpha
-                optimalBinarize = CV.best_estimator_.binarize
-                optimalFitPrior = CV.best_estimator_.fit_prior
-                print("Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior,", Best score: ",CV.best_score_)
-
-                # # [2]Fast - Set default optimal params.
-                # optimalAlpha = 0.0001
-                # optimalBinarize = 0
-                # optimalFitPrior = True
-                # print("\tUsing Bernoulli estimator: Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior)
+                # [2]Fast - Set default optimal params.
+                optimalAlpha = 0.0001
+                optimalBinarize = 0
+                optimalFitPrior = True
+                print("\tUsing Bernoulli estimator: Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior)
 
                 # Choose best bernoulli, train and predict.
                 best_Bernoulli = BernoulliNB(alpha=optimalAlpha,binarize=optimalBinarize,fit_prior=optimalFitPrior)
