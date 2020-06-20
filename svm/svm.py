@@ -10,7 +10,7 @@ from collections import defaultdict
 from nltk.corpus import wordnet as wn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import model_selection, naive_bayes, svm
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix 
+from sklearn.metrics import accuracy_score, classification_report 
 from sklearn.model_selection import GridSearchCV, KFold, cross_validate
 
 import sys
@@ -56,13 +56,13 @@ def scoringFunction(estimator, x, y):
 
     return 1
 
-def printAverageValuesOfClassificationReportList(outputFile, parameters):
+def printAverageValuesOfClassificationReportList(outputFile, parameters, functionalOnlyFlag):
 
     global classificationReportList
     resultDictionary = {}
 
     commentClassArray = []
-    if (outputFile == 'output.csv'):
+    if (functionalOnlyFlag == False):
         commentClassArray = ['Functional-Method', 'Functional-Module', 'Functional-Inline', 'Code', 'IDE', 'General', 'Notice', 'ToDo']
     else:
         commentClassArray = ['Functional', 'Code', 'IDE', 'General', 'Notice', 'ToDo']
@@ -89,7 +89,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters):
     
     accuracy = accuracy / len(classificationReportList)
 
-    if (outputFile == 'output.csv'):
+    if (functionalOnlyFlag == False):
         print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], accuracy, 
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
@@ -134,11 +134,11 @@ if __name__ == "__main__":
     original_stdout = sys.stdout
     
     # Go through all of the input files and configurations and export the results to a .csv file.
-    for input_file, output_file in [("input.txt", "output.csv"), ("input-functional.txt", "output-functional.csv")]:
+    for input_file, output_file, functionalOnlyFlag in [("input.txt", "output.csv", False), ("input-functional.txt", "output-functional.csv", True)]:
          with open(output_file, 'w') as output:
             sys.stdout = output
             
-            header = "Lower Case,Remove Stop Words,Stem,Test Size,Max Features,N-gram Range,TF,TFIDF,Accuracy"
+            header = "Lower Case,Remove Stop Words,Stem,Max Features,N-gram Range,TF,TFIDF,Accuracy"
             if (input_file == "input.txt"):
                 header += getHeaderAll()
             else:
@@ -162,8 +162,8 @@ if __name__ == "__main__":
                 SVM = GridSearchCV(svm.SVC(), param_grid, refit = True, cv=inner_cv, verbose = 0)
 
                 # Outer CV. SVM.fit() gets called in cross_validate.
-                cross_validate(SVM, X=matrix, y=Corpus['Class'], scoring = scoringFunction, cv = outer_cv, return_train_score = True)
+                cross_validate(SVM, X=matrix, y=Corpus['Class'], scoring = scoringFunction, cv = outer_cv, return_train_score = False)
 
-                printAverageValuesOfClassificationReportList(output_file, parameters)
+                printAverageValuesOfClassificationReportList(output_file, parameters, functionalOnlyFlag)
 
             sys.stdout = original_stdout
