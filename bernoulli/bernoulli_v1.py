@@ -1,5 +1,6 @@
 import preprocessing
 import utilities
+import warnings
 import pandas as pd
 import numpy as np
 import time
@@ -13,7 +14,7 @@ from nltk.corpus import wordnet as wn
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import model_selection, naive_bayes, svm
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.model_selection import GridSearchCV, KFold, cross_validate
+from sklearn.model_selection import GridSearchCV, KFold,StratifiedKFold, cross_validate
 from sklearn.naive_bayes import BernoulliNB
 
 import sys
@@ -25,6 +26,8 @@ if __name__ == "__main__":
     print("----------------------------------- PROGRAM START -----------------------------------")
     start_time = time.time()
     original_stdout = sys.stdout
+
+    #warnings.filterwarnings('ignore')
 
     # Construct parameters.
     parametersList = list()
@@ -98,7 +101,7 @@ if __name__ == "__main__":
                 best_Bernoulli = BernoulliNB(alpha=parameters.alpha_naive_bayes)
 
                 # Cross validation.
-                outer_cv = KFold(n_splits = 10, shuffle = True, random_state = 42)
+                outer_cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = 42)
                 # Outer CV. best_Bernoulli.fit() gets called in cross_validate.
                 cross_validate(best_Bernoulli, X=X, y=Y, scoring = utilities.scoringFunction, cv = outer_cv, return_train_score = False)
 
