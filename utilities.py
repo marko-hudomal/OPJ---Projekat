@@ -116,8 +116,3 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
 
     classificationReportList = []
 
-
-
-if __name__ == "__main__":
-
-    print("pozz")
