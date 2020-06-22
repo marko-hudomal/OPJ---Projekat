@@ -61,13 +61,13 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def printAverageValuesOfClassificationReportList(outputStream, outputFileName, parameters, functionalMultipleSubCategories):
+def printAverageValuesOfClassificationReportList(outputFile, parameters, functionalOnlyFlag):
 
     global classificationReportList
     resultDictionary = {}
 
     commentClassArray = []
-    if (functionalMultipleSubCategories):
+    if (functionalOnlyFlag == False):
         commentClassArray = ['Functional-Method', 'Functional-Module', 'Functional-Inline', 'Code', 'IDE', 'General', 'Notice', 'ToDo']
     else:
         commentClassArray = ['Functional', 'Code', 'IDE', 'General', 'Notice', 'ToDo']
@@ -77,34 +77,25 @@ def printAverageValuesOfClassificationReportList(outputStream, outputFileName, p
             for factor in ['precision', 'recall', 'f1-score', 'support']:
                 if (commentClass in resultDictionary):
                     if (factor in resultDictionary[commentClass]):
-                        resultDictionary[commentClass][factor] = resultDictionary[commentClass][factor] + classificationReportList[i][commentClass][factor]
+                        resultDictionary[commentClass][factor] = resultDictionary[commentClass][factor] + classificationReportList[i][1][commentClass][factor]
                     else:
-                        resultDictionary[commentClass][factor] = classificationReportList[i][commentClass][factor]
+                        resultDictionary[commentClass][factor] = classificationReportList[i][1][commentClass][factor]
                 else:
                     resultDictionary[commentClass] = {}
-                    resultDictionary[commentClass][factor] = classificationReportList[i][commentClass][factor]
+                    resultDictionary[commentClass][factor] = classificationReportList[i][1][commentClass][factor]
 
     for commentClass in commentClassArray:
         for factor in ['precision', 'recall', 'f1-score', 'support']:
             resultDictionary[commentClass][factor] = resultDictionary[commentClass][factor] / len(classificationReportList)
 
-    # average out score on 10 fold cross validation reported scores per one hyper-parameters combination
-    # f1score and accu are  manually computed
-    f1score = 0
+    accuracy = 0
     for i in range(0, len(classificationReportList)):
-        f1score = f1score + classificationReportList[i]["allClasses"]["f1score"]
+        accuracy = accuracy + classificationReportList[i][0]
 
-    f1score = f1score / len(classificationReportList)
+    accuracy = accuracy / len(classificationReportList)
 
-    accu = 0
-    for i in range(0, len(classificationReportList)):
-        accu = accu + classificationReportList[i]["allClasses"]["accu"]
-
-    accu = accu / len(classificationReportList)
-
-
-    if (functionalMultipleSubCategories):
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures,  "\"" + str(parameters.ngramRange) + "\"", parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alpha_naive_bayes, f1score, accu,
+    if (functionalOnlyFlag == False):
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], accuracy,
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
         resultDictionary['Functional-Inline']['precision'], resultDictionary['Functional-Inline']['recall'], resultDictionary['Functional-Inline']['f1-score'], resultDictionary['Functional-Inline']['support'],
@@ -112,18 +103,18 @@ def printAverageValuesOfClassificationReportList(outputStream, outputFileName, p
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
         resultDictionary['General']['precision'], resultDictionary['General']['recall'], resultDictionary['General']['f1-score'], resultDictionary['General']['support'],
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
-        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], sep=',', file=outputStream)
+        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], sep=',')
     else:
-        print(outputStream, parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, "'" + str(parameters.ngramRange) + "'",  parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alpha_naive_bayes, f1score, accu,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], accuracy,
         resultDictionary['Functional']['precision'], resultDictionary['Functional']['recall'], resultDictionary['Functional']['f1-score'], resultDictionary['Functional']['support'],
         resultDictionary['Code']['precision'], resultDictionary['Code']['recall'], resultDictionary['Code']['f1-score'], resultDictionary['Code']['support'],
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
         resultDictionary['General']['precision'], resultDictionary['General']['recall'], resultDictionary['General']['f1-score'], resultDictionary['General']['support'],
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
-        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], sep=',', file=outputStream)
+        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], sep=',')
 
-    outputStream.flush()
     classificationReportList = []
+
 
 
 if __name__ == "__main__":
