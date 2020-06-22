@@ -103,7 +103,9 @@ if __name__ == "__main__":
                 cross_validate(best_Bernoulli, X=X, y=Y, scoring = utilities.scoringFunction, cv = outer_cv, return_train_score = False)
 
                 # Print to output file.
+                sys.stdout = output_file_print_target   # Change the standard output to the file we created.
                 utilities.printAverageValuesOfClassificationReportList(output_file, parameters, is_functional)
+                sys.stdout = original_stdout            # Reset the standard output to its original value
 
                 count+=1
 
