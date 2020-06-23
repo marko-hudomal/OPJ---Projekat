@@ -50,8 +50,6 @@ if __name__ == "__main__":
                                 alpha_value)
                             )
 
-    # Save a reference to the original standard output
-    original_stdout = sys.stdout
     cnt = 0
 
     # Go through all of the input files and configurations and export the results to a .csv file.
@@ -85,5 +83,3 @@ if __name__ == "__main__":
 
                 # Print progress info to screen for visualization
                 print(vars(parameters))           
-
-            sys.stdout = original_stdout
