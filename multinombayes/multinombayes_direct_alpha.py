@@ -1,4 +1,12 @@
+# Add parent folder to path for importing preprocessing and utilities
+import sys
+sys.path.insert(0,'..')
+
+# Import our modules
 import preprocessing
+import utilities
+
+# Import libraries
 import pandas as pd
 import numpy as np
 from nltk.tokenize import word_tokenize
@@ -14,13 +22,10 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score
 from sklearn.model_selection import GridSearchCV, KFold, StratifiedKFold, cross_validate
 
-import sys
-
 import warnings
 warnings.filterwarnings('ignore')
 
 from datetime import datetime
-import utilities
 
 if __name__ == "__main__":
 
@@ -50,7 +55,7 @@ if __name__ == "__main__":
     cnt = 0
 
     # Go through all of the input files and configurations and export the results to a .csv file.
-    for input_file, output_file_path, singleFunctionalClass in [("svi sredjeni.txt", "output/outputNBdirectAlpha.csv", False), ("svi sredjeni functional.txt", "output/outputNBdirectAlphaFunctional.csv", True)]:
+    for input_file, output_file_path, singleFunctionalClass in [("../svi sredjeni.txt", "output/outputNBdirectAlpha.csv", False), ("../svi sredjeni functional.txt", "output/outputNBdirectAlphaFunctional.csv", True)]:
          with open(output_file_path, 'w') as output:
             print(utilities.getHeader(singleFunctionalClass), file=output)
             output.flush()
