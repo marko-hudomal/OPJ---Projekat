@@ -55,7 +55,7 @@ if __name__ == "__main__":
     cnt = 0
 
     # Go through all of the input files and configurations and export the results to a .csv file.
-    for input_file, output_file_path, singleFunctionalClass in [("../svi sredjeni.txt", "output/outputNBdirectAlpha.csv", False), ("../svi sredjeni functional.txt", "output/outputNBdirectAlphaFunctional.csv", True)]:
+    for input_file, output_file_path, singleFunctionalClass in [("../input.txt", "output/outputNBdirectAlpha.csv", False), ("../input-functional.txt", "output/outputNBdirectAlphaFunctional.csv", True)]:
          with open(output_file_path, 'w') as output:
             print(utilities.getHeader(singleFunctionalClass), file=output)
             output.flush()
