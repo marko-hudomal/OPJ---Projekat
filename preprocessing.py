@@ -18,7 +18,7 @@ def read_file(file_name):
     return pd.read_csv(file_name, encoding='ISO-8859-1', delimiter="\t")
 
 
-def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=None):
+def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=False, spec_chars_to_keep="<>@_$=;,-\\\\.\\\\+\\\\.\\\\(\\\\)\\\\[\\\\]\\\\{\\\\}", comment_index_to_analize=None):
     df = file_df.copy(deep=True)
     for index, comment in enumerate(df[COMMENT]):
         if comment_index_to_analize == index:
@@ -37,9 +37,9 @@ def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=Fal
             if comment_index_to_analize == index:
                 print("LOWER CASE\n", words, "\n")
 
-        regex = "[^A-Za-z{}]".format(spec_chars_to_keep)
+        regex = "[^A-Za-z0-9{}]".format(spec_chars_to_keep)
         words = [re.sub(regex, "", word) for word in words]  # remove characters
-        words = [word for word in words if word]  # remove empty string
+        words = [word for word in words if word]  # remove empty strings
         if comment_index_to_analize == index:
             print("REGEX\n", words, "\n")
 
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     file_df = read_file("input.txt")
     df = process_data(file_df, to_lower_case=True, remove_stop_words=False,
-                      stem=False, spec_chars_to_keep="@_$=;-", comment_index_to_analize=1)
+                      stem=False, comment_index_to_analize=1518)
 
     counts, names = vectorize(df)
     tfidfs, names = vectorize(df, max_features=500, tfidf=True)
