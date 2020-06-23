@@ -108,7 +108,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
     f1ScoreAvg /= len(classificationReportList)
 
     if (functionalOnlyFlag == False):
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, "\"" + str(parameters.ngramRange) + "\"", parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
         resultDictionary['Functional-Inline']['precision'], resultDictionary['Functional-Inline']['recall'], resultDictionary['Functional-Inline']['f1-score'], resultDictionary['Functional-Inline']['support'],
@@ -118,13 +118,13 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
         resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], file=outputFile, sep=',')
     else:
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, "\"" + str(parameters.ngramRange) + "\"", parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional']['precision'], resultDictionary['Functional']['recall'], resultDictionary['Functional']['f1-score'], resultDictionary['Functional']['support'],
         resultDictionary['Code']['precision'], resultDictionary['Code']['recall'], resultDictionary['Code']['f1-score'], resultDictionary['Code']['support'],
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
         resultDictionary['General']['precision'], resultDictionary['General']['recall'], resultDictionary['General']['f1-score'], resultDictionary['General']['support'],
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
-        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], file=outputFile, sep=',')
+        resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'],file=outputFile, sep=',')
 
     classificationReportList = []
 

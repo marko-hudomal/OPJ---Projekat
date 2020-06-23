@@ -72,7 +72,7 @@ if __name__ == "__main__":
                 print(utilities.bcolors.WARNING + "***PROGRESS*** file: [",count_file,"/ 2 ], param: [", count,"/",parametersList.__len__(),"]" + utilities.bcolors.ENDC)
 
                 print("Selected file processing param:")
-                print("\tLowerCase: {0}| RemoveStopWords: {1}| Stem: {2}| MaxFeatures: {3}| N-gramRange: {4}| TFIDF[0]: {5}| TFIDF[1]: {6}".format(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.tfidfFlags[0], parameters.tfidfFlags[1]), sep='\t')
+                print("\tLowerCase: {0}| RemoveStopWords: {1}| Stem: {2}| MaxFeatures: {3}| N-gramRange: {4}| alpha: {5}".format(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.alphaNaiveBayes), sep='\t')
 
                 Corpus, X, names = utilities.getInfoFromParameters(fileData, parameters)
                 Y = Corpus["Class"]
@@ -98,7 +98,7 @@ if __name__ == "__main__":
                 # print("\tUsing Bernoulli estimator: Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior)
 
                 # Choose best bernoulli, train and predict.
-                best_Bernoulli = BernoulliNB(alpha=parameters.alpha_naive_bayes)
+                best_Bernoulli = BernoulliNB(alpha=parameters.alphaNaiveBayes)
 
                 # Cross validation.
                 outer_cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = 42)
@@ -106,9 +106,7 @@ if __name__ == "__main__":
                 cross_validate(best_Bernoulli, X=X, y=Y, scoring = utilities.scoringFunction, cv = outer_cv, return_train_score = False)
 
                 # Print to output file.
-                sys.stdout = output_file_print_target   # Change the standard output to the file we created.
-                utilities.printAverageValuesOfClassificationReportList(output_file, parameters, is_functional)
-                sys.stdout = original_stdout            # Reset the standard output to its original value
+                utilities.printAverageValuesOfClassificationReportList(output_file_print_target, parameters, is_functional)
 
                 count+=1
 
