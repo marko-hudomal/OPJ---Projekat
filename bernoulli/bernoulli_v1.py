@@ -27,7 +27,7 @@ if __name__ == "__main__":
     start_time = time.time()
     original_stdout = sys.stdout
 
-    #warnings.filterwarnings('ignore')
+    warnings.filterwarnings('ignore')
 
     # Construct parameters.
     parametersList = list()
@@ -37,7 +37,7 @@ if __name__ == "__main__":
             for stemFlag in [False, True]:
                     for maxFeatures in [1000, 5000, 10000]:
                         for ngramRange in [(1, 1), (1, 2), (1, 3)]:
-                            for alpha in [0.00001]:
+                            for alpha in [0.1, 0.00001, 0.000001]:
                                 parametersList.append(utilities.Parameters(
                                     lowerCaseFlag,
                                     removeStopWordsFlag,
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
                 Corpus, X, names = utilities.getInfoFromParameters(fileData, parameters)
                 Y = Corpus["Class"]
-                print("Search for best estimator params...")
+                #print("Search for best estimator params...")
                 # # [1]Slow - Find optimal params
                 # param_grid = {'alpha': [0.0001,0.001, 0.01, 0.1, 0.2, 0.5, 1.0],
                 #             'binarize': [0.0,0.05, 0.1, 0.3, 0.6, 1.0],
