@@ -43,9 +43,9 @@ def scoringFunction(estimator, x, y):
 
     return 1
 
-def getHeader(is_functional):
+def getHeader(functionalOnlyFlag):
     result = "Lower Case,Remove Stop Words,Stem,Max Features,N-gram Range,TF,TFIDF,Alpha_Naive_Bayes,Accuracy,Macro Precision,Macro Recall,Macro F1-Score"
-    if (is_functional):
+    if (functionalOnlyFlag):
         result += ",Functional Precision,Functional Recall,Functional F1-Score,Functional Support"
     else:
         result += ",Functional-Method Precision,Functional-Method Recall,Functional-Method F1-Score,Functional-Method Support" + ",Functional-Module Precision,Functional-Module Recall,Functional-Module F1-Score,Functional-Module Support" + ",Functional-Inline Precision,Functional-Inline Recall,Functional-Inline F1-Score,Functional-Inline Support"
@@ -108,7 +108,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
     f1ScoreAvg /= len(classificationReportList)
 
     if (functionalOnlyFlag == False):
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, "\"" + str(parameters.ngramRange) + "\"", parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
         resultDictionary['Functional-Inline']['precision'], resultDictionary['Functional-Inline']['recall'], resultDictionary['Functional-Inline']['f1-score'], resultDictionary['Functional-Inline']['support'],
@@ -118,7 +118,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
         resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], file=outputFile, sep=',')
     else:
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, "\"" + str(parameters.ngramRange) + "\"", parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional']['precision'], resultDictionary['Functional']['recall'], resultDictionary['Functional']['f1-score'], resultDictionary['Functional']['support'],
         resultDictionary['Code']['precision'], resultDictionary['Code']['recall'], resultDictionary['Code']['f1-score'], resultDictionary['Code']['support'],
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
