@@ -107,6 +107,7 @@ if __name__ == "__main__":
 
                 # Print to output file.
                 utilities.printAverageValuesOfClassificationReportList(output_file_print_target, parameters, is_functional)
+                output_file_print_target. flush()
 
                 count+=1
 
