@@ -12,13 +12,6 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_validat
 from sklearn.linear_model import LogisticRegression
 import gc
 
-#Brankica 0
-#Marija 1
-#Stefan 2
-iAm = 
-
-# komanda za run iz foldera gde je ovaj fajl: python -W ignore logistic_regression.py
-
 def compare_penalties(fileData):
     params = utilities.Parameters(
                             lowerCaseFlag=True, 
@@ -77,19 +70,11 @@ if __name__ == "__main__":
     
     
     
-    #iterToStart = 144 + 14 #158
-    iterToStart = 288 # Skip all
-    if iAm == 0:
-        iterToStart = 0
-    elif iAm == 1:
-        iterToStart = 72
-    elif iAm == 2:
-        iterToStart = 144 + 72
-    
+    iterToStart = 0
     cnt = 0
     comparePenaltiesFlag = False
     # Go through all of the input files and configurations and export the results to a .csv file.
-    for input_file, output_file, functionalOnlyFlag in [("../input.txt", "output-help.csv", False), ("../input-functional.txt", "output-help-functional.csv", True)]:
+    for input_file, output_file, functionalOnlyFlag in [("../input.txt", "output.csv", False), ("../input-functional.txt", "output-functional.csv", True)]:
          with open(output_file, 'w') as output:
             print(utilities.getHeader(functionalOnlyFlag), file=output)
 
@@ -99,7 +84,6 @@ if __name__ == "__main__":
                 import sys
                 sys.exit()
             
-            print("Processing started")
             for parameters in parametersList:
                 if (cnt<iterToStart):
                     cnt = cnt + 1
@@ -123,5 +107,6 @@ if __name__ == "__main__":
                 cross_validate(gsLr, X=matrix, y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv)
 
                 utilities.printAverageValuesOfClassificationReportList(output, parameters, functionalOnlyFlag) 
+                output.flush()
                 print(cnt)
                 cnt = cnt + 1
