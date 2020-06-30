@@ -46,8 +46,12 @@ def compare_penalties(fileData):
     
     print("L1 accuracy: ", scoresL1['test_accuracy'][0], " - L2 accuracy: " ,scoresL2['test_accuracy'][0])
     print("L1 F1: ", scoresL1['test_f1_macro'][0], " - L2 F1: " ,scoresL2['test_f1_macro'][0])
-    #L1 accuracy:  0.9404406273338313  - L2 accuracy:  0.9432412247946229
-    #L1 F1:  0.800465164204681  - L2 F1:  0.8037180312377004
+    # input.txt
+    # L1 accuracy:  0.9406273338312173  - L2 accuracy:  0.9437079910380881
+    # L1 F1:  0.8006433083021729  - L2 F1:  0.8042089239633639
+    # input-functional.txt
+    # L1 accuracy:  0.9700336071695295  - L2 accuracy:  0.9643390589992532
+    # L1 F1:  0.7794722564042873  - L2 F1:  0.7559568510003192
     
 if __name__ == "__main__":
 
@@ -81,8 +85,7 @@ if __name__ == "__main__":
             fileData = preprocessing.read_file(input_file)
             if comparePenaltiesFlag:
                 compare_penalties(fileData)
-                import sys
-                sys.exit()
+                continue
             
             for parameters in parametersList:
                 if (cnt<iterToStart):
