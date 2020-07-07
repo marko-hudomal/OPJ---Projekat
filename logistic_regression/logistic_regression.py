@@ -53,6 +53,7 @@ def compare_penalties(fileData):
     #../input-functional.txt
     #L1 accuracy:  0.9301717699775952  - L2 accuracy:  0.9745145631067962
     #L1 F1:  0.6872732894618219  - L2 F1:  0.8683269538627415
+
     
 if __name__ == "__main__":
 

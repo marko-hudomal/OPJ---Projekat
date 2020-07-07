@@ -16,12 +16,12 @@ from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_validat
 
 def compare_penalties(fileData):
     params = utilities.Parameters(
-                            lowerCaseFlag=True, 
-                            removeStopWordsFlag=True, 
+                            lowerCaseFlag=False, 
+                            removeStopWordsFlag=False, 
                             stemFlag=False, 
-                            maxFeatures=1000,
-                            ngramRange=(1,2),
-                            tfidfFlags=(False, True))
+                            maxFeatures=7363,
+                            ngramRange=(1,1),
+                            tfidfFlags=(False, False))
     Corpus, matrix, names = utilities.getInfoFromParameters(fileData, params)
     svmL1 = svm.LinearSVC(penalty = 'l1', dual=False)
     svmL2 = svm.LinearSVC(penalty = 'l2')
@@ -49,11 +49,11 @@ def compare_penalties(fileData):
     print("L1 accuracy: ", scoresL1['test_accuracy'][0], " - L2 accuracy: " ,scoresL2['test_accuracy'][0])
     print("L1 F1: ", scoresL1['test_f1_macro'][0], " - L2 F1: " ,scoresL2['test_f1_macro'][0])
     # 1)
-    # L1 accuracy:  0.9382001493651979  - L2 accuracy:  0.9389469753547424
-    # L1 F1:  0.8397522550698262  - L2 F1:  0.8447653267836541
+    # L1 accuracy:  0.9514563106796117  - L2 accuracy:  0.9508961911874533
+    # L1 F1:  0.8499444988342673  - L2 F1:  0.8718378359011758
     # 2)
-    # L1 accuracy:  0.9715272591486184  - L2 accuracy:  0.9713405526512322
-    # L1 F1:  0.8495552889885865  - L2 F1:  0.8620130139767234
+    # L1 accuracy:  0.9761015683345781  - L2 accuracy:  0.9749813293502614
+    # L1 F1:  0.8745872577817575  - L2 F1:  0.8852742368817488
 
 if __name__ == "__main__":
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     for lowerCaseFlag in [False, True]:
         for removeStopWordsFlag in [False, True]:
             for stemFlag in [False, True]:
-                    for maxFeatures in [1000, 5000]:
+                    for maxFeatures in [1000, 5000, 7363]:
                         for ngramRange in [(1, 1), (1, 2), (1, 3)]:
                             for tfidfFlags in [(False, False), (True, False), (False, True)]:
                                 parametersList.append(utilities.Parameters(
