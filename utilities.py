@@ -17,7 +17,7 @@ from sklearn.model_selection import GridSearchCV, KFold, cross_validate
 from sklearn.naive_bayes import BernoulliNB
 
 class Parameters :
-    def __init__(self, lowerCaseFlag, removeStopWordsFlag, stemFlag, maxFeatures, ngramRange, tfidfFlags, alphaNaiveBayes=0.001):
+    def __init__(self, lowerCaseFlag, removeStopWordsFlag, stemFlag, maxFeatures, ngramRange, tfidfFlags, alphaNaiveBayes=0.001, binarizeNaiveBayes=0.0):
         self.lowerCaseFlag = lowerCaseFlag
         self.removeStopWordsFlag = removeStopWordsFlag
         self.stemFlag = stemFlag
@@ -25,6 +25,7 @@ class Parameters :
         self.ngramRange = ngramRange
         self.tfidfFlags = tfidfFlags
         self.alphaNaiveBayes = alphaNaiveBayes
+        self.binarizeNaiveBayes = binarizeNaiveBayes
 
 def getInfoFromParameters(input_file, parameters):
     Corpus = preprocessing.process_data(input_file, to_lower_case=parameters.lowerCaseFlag, remove_stop_words=parameters.removeStopWordsFlag, stem=parameters.stemFlag)
@@ -44,7 +45,7 @@ def scoringFunction(estimator, x, y):
     return 1
 
 def getHeader(functionalOnlyFlag):
-    result = "Lower Case,Remove Stop Words,Stem,Max Features,N-gram Range,TF,TFIDF,Alpha_Naive_Bayes,Accuracy,Macro Precision,Macro Recall,Macro F1-Score"
+    result = "Lower Case,Remove Stop Words,Stem,Max Features,N-gram Range,TF,TFIDF,Alpha_Naive_Bayes,Binarize_Naive_Bayes,Accuracy,Macro Precision,Macro Recall,Macro F1-Score"
     if (functionalOnlyFlag):
         result += ",Functional Precision,Functional Recall,Functional F1-Score,Functional Support"
     else:
@@ -108,7 +109,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
     f1ScoreAvg /= len(classificationReportList)
 
     if (functionalOnlyFlag == False):
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes,parameters.binarizeNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional-Method']['precision'], resultDictionary['Functional-Method']['recall'], resultDictionary['Functional-Method']['f1-score'], resultDictionary['Functional-Method']['support'],
         resultDictionary['Functional-Module']['precision'], resultDictionary['Functional-Module']['recall'], resultDictionary['Functional-Module']['f1-score'], resultDictionary['Functional-Module']['support'],
         resultDictionary['Functional-Inline']['precision'], resultDictionary['Functional-Inline']['recall'], resultDictionary['Functional-Inline']['f1-score'], resultDictionary['Functional-Inline']['support'],
@@ -118,7 +119,7 @@ def printAverageValuesOfClassificationReportList(outputFile, parameters, functio
         resultDictionary['Notice']['precision'], resultDictionary['Notice']['recall'], resultDictionary['Notice']['f1-score'], resultDictionary['Notice']['support'],
         resultDictionary['ToDo']['precision'], resultDictionary['ToDo']['recall'], resultDictionary['ToDo']['f1-score'], resultDictionary['ToDo']['support'], file=outputFile, sep=',')
     else:
-        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
+        print(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, str(parameters.ngramRange[0]) +"."+ str(parameters.ngramRange[1]), parameters.tfidfFlags[0], parameters.tfidfFlags[1], parameters.alphaNaiveBayes,parameters.binarizeNaiveBayes, accuracy, precisionAvg, recallAvg, f1ScoreAvg,
         resultDictionary['Functional']['precision'], resultDictionary['Functional']['recall'], resultDictionary['Functional']['f1-score'], resultDictionary['Functional']['support'],
         resultDictionary['Code']['precision'], resultDictionary['Code']['recall'], resultDictionary['Code']['f1-score'], resultDictionary['Code']['support'],
         resultDictionary['IDE']['precision'], resultDictionary['IDE']['recall'], resultDictionary['IDE']['f1-score'], resultDictionary['IDE']['support'],
