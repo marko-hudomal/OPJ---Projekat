@@ -35,17 +35,24 @@ if __name__ == "__main__":
     for lowerCaseFlag in [False, True]:
         for removeStopWordsFlag in [False, True]:
             for stemFlag in [False, True]:
-                    for maxFeatures in [1000, 5000, 10000]:
+                    for maxFeatures in [1000, 5000, 7363]:
                         for ngramRange in [(1, 1), (1, 2), (1, 3)]:
-                            for alpha in [0.1, 0.00001, 0.000001]:
-                                parametersList.append(utilities.Parameters(
-                                    lowerCaseFlag,
-                                    removeStopWordsFlag,
-                                    stemFlag,
-                                    maxFeatures,
-                                    ngramRange,
-                                    (False, False),
-                                    alpha)
+                            for alpha in [0.00001, 0.001, 1]:
+                                for binarize in [0.0, 0.25, 1]:
+                                    for tfidfFlags in [(False, False), (True, False), (False, True)]:
+                                        if (binarize==0.25 and tfidfFlags==(False,False)):
+                                            continue
+                                        if (binarize==1 and tfidfFlags!=(False,False)):
+                                            continue
+                                        parametersList.append(utilities.Parameters(
+                                            lowerCaseFlag,
+                                            removeStopWordsFlag,
+                                            stemFlag,
+                                            maxFeatures,
+                                            ngramRange,
+                                            tfidfFlags,
+                                            alpha,
+                                            binarize)
                                 )
     print("ParamsList created.\n")
 
@@ -72,7 +79,7 @@ if __name__ == "__main__":
                 print(utilities.bcolors.WARNING + "***PROGRESS*** file: [",count_file,"/ 2 ], param: [", count,"/",parametersList.__len__(),"]" + utilities.bcolors.ENDC)
 
                 print("Selected file processing param:")
-                print("\tLowerCase: {0}| RemoveStopWords: {1}| Stem: {2}| MaxFeatures: {3}| N-gramRange: {4}| alpha: {5}".format(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.alphaNaiveBayes), sep='\t')
+                print("\tLowerCase: {0}| RemoveStopWords: {1}| Stem: {2}| MaxFeatures: {3}| N-gramRange: {4}| alpha: {5}| binarize: {6}".format(parameters.lowerCaseFlag, parameters.removeStopWordsFlag, parameters.stemFlag, parameters.maxFeatures, parameters.ngramRange, parameters.alphaNaiveBayes, parameters.binarizeNaiveBayes), sep='\t')
 
                 Corpus, X, names = utilities.getInfoFromParameters(fileData, parameters)
                 Y = Corpus["Class"]
@@ -98,7 +105,7 @@ if __name__ == "__main__":
                 # print("\tUsing Bernoulli estimator: Optimal Alpha: ",optimalAlpha,", Optimal Binarize",optimalBinarize,", Optimal fit prior",optimalFitPrior)
 
                 # Choose best bernoulli, train and predict.
-                best_Bernoulli = BernoulliNB(alpha=parameters.alphaNaiveBayes)
+                best_Bernoulli = BernoulliNB(alpha = parameters.alphaNaiveBayes, binarize = parameters.binarizeNaiveBayes)
 
                 # Cross validation.
                 outer_cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = 42)
