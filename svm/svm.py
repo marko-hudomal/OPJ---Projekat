@@ -1,3 +1,7 @@
+import warnings
+warnings.filterwarnings("ignore")
+warnings.simplefilter("ignore")
+
 import preprocessing
 import utilities
 import pandas as pd
