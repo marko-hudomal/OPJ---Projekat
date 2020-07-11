@@ -61,17 +61,13 @@ def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=Fal
     return df
 
 
-def vectorize(df, max_features=1000, ngram_range=(1, 1), tf=False, tfidf=False):
-    pipe = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
-                     ('tfidf', TfidfTransformer(use_idf=not tf))]).fit(df[COMMENT])
+def vectorize(estimator, max_features=1000, ngram_range=(1, 1), tf=False, tfidf=False):
+    pipeline = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
+                     ('tfidf', TfidfTransformer(use_idf=not tf)),
+                     ('clf', estimator),
+                     ])
 
-    feature_names = pipe['count'].get_feature_names()
-    if tf:
-        return pipe.transform(df[COMMENT]).toarray(), feature_names
-    if tfidf:
-        return pipe.transform(df[COMMENT]).toarray(), feature_names
-
-    return pipe['count'].transform(df[COMMENT]).toarray(), feature_names
+    return pipeline
 
 
 if __name__ == "__main__":
