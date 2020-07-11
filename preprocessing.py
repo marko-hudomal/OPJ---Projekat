@@ -62,10 +62,15 @@ def process_data(file_df, to_lower_case=False, remove_stop_words=False, stem=Fal
 
 
 def vectorize(estimator, max_features=1000, ngram_range=(1, 1), tf=False, tfidf=False):
-    pipeline = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
-                     ('tfidf', TfidfTransformer(use_idf=not tf)),
-                     ('clf', estimator),
-                     ])
+    if tf or tfidf:
+        pipeline = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
+                         ('tfidf', TfidfTransformer(use_idf=not tf)),
+                         ('clf', estimator),
+                         ])
+    else:
+         pipeline = Pipeline([('count', CountVectorizer(max_features=max_features, ngram_range=ngram_range, tokenizer=(lambda s: s.split()))),
+                         ('clf', estimator),
+                         ])
 
     return pipeline
 

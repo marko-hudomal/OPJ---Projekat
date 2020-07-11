@@ -76,19 +76,19 @@ if __name__ == "__main__":
     
     
     
-    iterToStart = 21
+    iterToStart = 0
     cnt = 0
     comparePenaltiesFlag = False
     # Go through all of the input files and configurations and export the results to a .csv file.
     for input_file, output_file, functionalOnlyFlag in [("../input.txt", "output.csv", False), ("../input-functional.txt", "output-functional.csv", True)]:
-         with open(output_file, 'a') as output:
+         with open(output_file, 'w') as output:
             print(input_file)
             fileData = preprocessing.read_file(input_file)
             if comparePenaltiesFlag:
                 compare_penalties(fileData)
                 continue
                 
-            #print(utilities.getHeader(functionalOnlyFlag), file=output)
+            print(utilities.getHeader(functionalOnlyFlag), file=output)
 
             for parameters in parametersList:
                 if (cnt<iterToStart):
