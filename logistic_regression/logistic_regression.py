@@ -76,41 +76,43 @@ if __name__ == "__main__":
     
     
     
-    iterToStart = 0
+    iterToStart = 21
     cnt = 0
     comparePenaltiesFlag = False
     # Go through all of the input files and configurations and export the results to a .csv file.
     for input_file, output_file, functionalOnlyFlag in [("../input.txt", "output.csv", False), ("../input-functional.txt", "output-functional.csv", True)]:
-         with open(output_file, 'w') as output:
+         with open(output_file, 'a') as output:
             print(input_file)
             fileData = preprocessing.read_file(input_file)
             if comparePenaltiesFlag:
                 compare_penalties(fileData)
                 continue
                 
-            print(utilities.getHeader(functionalOnlyFlag), file=output)
+            #print(utilities.getHeader(functionalOnlyFlag), file=output)
 
             for parameters in parametersList:
                 if (cnt<iterToStart):
                     cnt = cnt + 1
                     continue
                 # Find optimal hyperparameter C.
-                Corpus, matrix, names = utilities.getInfoFromParameters(fileData, parameters)
+                
+                lr = LogisticRegression()
+                Corpus, pipeline = utilities.getInfoFromParameters(fileData, parameters, lr)
 
-                param_grid = {'C': [0.1, 1, 10]}
+                param_grid = {'clf__C': [0.1, 1, 10]}
 
                 inner_cv = StratifiedKFold(n_splits = 3, shuffle = True, random_state = 42)
                 outer_cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = 42)
 
                 # Inner CV.
-                lr = LogisticRegression()
-                gsLr = GridSearchCV(lr, param_grid, cv=inner_cv, scoring='f1_macro', n_jobs = -1)
+                
+                gsPipeline = GridSearchCV(pipeline, param_grid, cv=inner_cv, scoring='f1_macro', n_jobs = -1)
                 
                 # Delete object from previous iteration
                 gc.collect()
                 len(gc.get_objects())
                 # Outer CV. gs_lr.fit() gets called in cross_validate.
-                cross_validate(gsLr, X=matrix, y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv)
+                cross_validate(gsPipeline, X=Corpus[preprocessing.COMMENT], y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv)
 
                 utilities.printAverageValuesOfClassificationReportList(output, parameters, functionalOnlyFlag) 
                 output.flush()

@@ -27,11 +27,11 @@ class Parameters :
         self.alphaNaiveBayes = alphaNaiveBayes
         self.binarizeNaiveBayes = binarizeNaiveBayes
 
-def getInfoFromParameters(input_file, parameters):
+def getInfoFromParameters(input_file, parameters, estimator):
     Corpus = preprocessing.process_data(input_file, to_lower_case=parameters.lowerCaseFlag, remove_stop_words=parameters.removeStopWordsFlag, stem=parameters.stemFlag)
-    counts_by_comment, names = preprocessing.vectorize(Corpus, max_features=parameters.maxFeatures, ngram_range=parameters.ngramRange, tf=parameters.tfidfFlags[0], tfidf=parameters.tfidfFlags[1])
+    pipeline = preprocessing.vectorize(estimator, max_features=parameters.maxFeatures, ngram_range=parameters.ngramRange, tf=parameters.tfidfFlags[0], tfidf=parameters.tfidfFlags[1])
 
-    return Corpus, counts_by_comment, names
+    return Corpus, pipeline
 
 classificationReportList = []
 def scoringFunction(estimator, x, y):
