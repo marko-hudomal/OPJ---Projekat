@@ -12,7 +12,7 @@ nltk.download('punkt', quiet=True)
 nltk.download('stopwords', quiet=True)
 
 COMMENT = "Comment"
-
+CLASS = "Class"
 
 def read_file(file_name):
     return pd.read_csv(file_name, encoding='ISO-8859-1', delimiter="\t")
