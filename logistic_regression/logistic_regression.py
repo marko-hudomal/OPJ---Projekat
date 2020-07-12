@@ -21,18 +21,21 @@ def compare_penalties(fileData):
                             ngramRange=(1,1),
                             tfidfFlags=(False, False))
                  
-    Corpus, matrix, names = utilities.getInfoFromParameters(fileData, params)
+                 
     lrL1 = LogisticRegression(penalty = 'l1', solver='saga', tol = 0.01)
     lrL2 = LogisticRegression(penalty = 'l2')
-
+          
+    Corpus, pipelineL1 = utilities.getInfoFromParameters(fileData, params, lrL1)
+    Corpus, pipelineL2 = utilities.getInfoFromParameters(fileData, params, lrL2)
+    
     splits = 2
     outer_cv = StratifiedKFold(n_splits = splits, shuffle = True, random_state = 42)
     
     # CV for L1 estimator and L2 estimator which returns f1 and accuracy and we will compare it
     scoring = ['accuracy', 'f1_macro']
-    scoresL2 = cross_validate(lrL2, X=matrix, y=Corpus['Class'], scoring = scoring, cv = outer_cv)
-    scoresL1 = cross_validate(lrL1, X=matrix, y=Corpus['Class'], scoring = scoring, cv = outer_cv)
-    
+    scoresL1 = cross_validate(pipelineL1, X=Corpus[preprocessing.COMMENT], y=Corpus[preprocessing.CLASS], scoring = scoring, cv = outer_cv)
+    scoresL2 = cross_validate(pipelineL2, X=Corpus[preprocessing.COMMENT], y=Corpus[preprocessing.CLASS], scoring = scoring, cv = outer_cv)
+  
     
     for i in range(1,splits):
         scoresL1['test_accuracy'][0] += scoresL1['test_accuracy'][i]
@@ -48,12 +51,11 @@ def compare_penalties(fileData):
     print("L1 accuracy: ", scoresL1['test_accuracy'][0], " - L2 accuracy: " ,scoresL2['test_accuracy'][0])
     print("L1 F1: ", scoresL1['test_f1_macro'][0], " - L2 F1: " ,scoresL2['test_f1_macro'][0])
     #../input.txt
-    #L1 accuracy:  0.9129947722180731  - L2 accuracy:  0.9516430171769978
-    #L1 F1:  0.7470872957742027  - L2 F1:  0.8626340284997934
+    #L1 accuracy:  0.8997386109036595  - L2 accuracy:  0.9516430171769978
+    #L1 F1:  0.7501045168203363  - L2 F1:  0.8626340284997934
     #../input-functional.txt
-    #L1 accuracy:  0.9301717699775952  - L2 accuracy:  0.9745145631067962
-    #L1 F1:  0.6872732894618219  - L2 F1:  0.8683269538627415
-
+    #L1 accuracy:  0.9325989544436146  - L2 accuracy:  0.9745145631067962
+    #L1 F1:  0.724296001318651  - L2 F1:  0.8683269538627415
     
 if __name__ == "__main__":
 
@@ -112,7 +114,7 @@ if __name__ == "__main__":
                 gc.collect()
                 len(gc.get_objects())
                 # Outer CV. gs_lr.fit() gets called in cross_validate.
-                cross_validate(gsPipeline, X=Corpus[preprocessing.COMMENT], y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv)
+                cross_validate(gsPipeline, X=Corpus[preprocessing.COMMENT], y=Corpus[preprocessing.CLASS], scoring = utilities.scoringFunction, cv = outer_cv)
 
                 utilities.printAverageValuesOfClassificationReportList(output, parameters, functionalOnlyFlag) 
                 output.flush()
