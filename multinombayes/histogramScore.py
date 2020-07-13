@@ -8,8 +8,8 @@ my_data = genfromtxt( filepath, delimiter=',')
 
 INDEX_MAX_FEATURES = 3
 INDEX_ALPHA = 7
-INDEX_ACCURACY=8
-INDEX_F1SCORE = 11
+INDEX_ACCURACY=9
+INDEX_F1SCORE = 12
 INDEX_N_GRAM = 4
 
 f1score = []
