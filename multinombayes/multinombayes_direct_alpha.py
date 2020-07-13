@@ -63,15 +63,15 @@ if __name__ == "__main__":
                 print(cnt, ' / ', len(parametersList))
                 # datetime object containing current date and time
                 print(">>>>>>>>>>>>>>>>>>>>> get info start. now =",  datetime.now())           
-                Corpus, matrix, names = utilities.getInfoFromParameters(fileData, parameters)
+                
+                classifier = MultinomialNB(alpha = parameters.alphaNaiveBayes)
+                Corpus, pipeline = utilities.getInfoFromParameters(fileData, parameters, classifier)
 
                 outer_cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = 42)
 
-                classifier = MultinomialNB(alpha = parameters.alphaNaiveBayes)
-
                 # Outer CV. Multinomial.fit() gets called in cross_validate.
                 print(">>>>>>>>>>>>>>>>>>>>> c_v start. now =",  datetime.now())
-                cross_validate(classifier, X=matrix, y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv, return_train_score = False)
+                cross_validate(pipeline, X=Corpus[preprocessing.COMMENT], y=Corpus['Class'], scoring = utilities.scoringFunction, cv = outer_cv, return_train_score = False)
                 print("<<<<<<<<<<<<<<<<<<<<<< c_v end. now =",  datetime.now())
 
                 # Print to csv
